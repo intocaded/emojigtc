@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Emojis</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .emoji { font-size: 2rem; cursor: pointer; margin: 10px; display: inline-block; }
+        .categoria { font-size: 1.5rem; margin-top: 20px; font-weight: bold; }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visualizador de Emojis</h1>
+    <p>Clique em um emoji para copiar o código Unicode</p>
+    <div id="emojiContainer"></div>
+    <div id="popup" class="popup"></div>
+
+    <script>
+        const categorias = {
+            "😀 Carinhas e Emoções": [0x1F600, 0x1F64F],
+            "🐻 Animais e Natureza": [0x1F400, 0x1F4D3],
+            "🍔 Comida e Bebida": [0x1F32D, 0x1F37F],
+            "⚽ Atividades": [0x1F3A0, 0x1F3FA],
+            "🌍 Viagens e Lugares": [0x1F30D, 0x1F5FF],
+            "💡 Objetos": [0x1F4A0, 0x1F4FF],
+            "⚠️ Símbolos": [0x2600, 0x26FF],
+            "🏴 Bandeiras": [0x1F1E6, 0x1F1FF]
+        };
+
+        const container = document.getElementById("emojiContainer");
+        const popup = document.getElementById("popup");
+
+        function adicionarCategoria(titulo, intervalo) {
+            const tituloCategoria = document.createElement("div");
+            tituloCategoria.className = "categoria";
+            tituloCategoria.textContent = titulo;
+            container.appendChild(tituloCategoria);
+
+            for (let codigo = intervalo[0]; codigo <= intervalo[1]; codigo++) {
+                const span = document.createElement("span");
+                span.className = "emoji";
+                span.innerHTML = `&#${codigo};`;
+                span.onclick = () => copiarParaAreaDeTransferencia(codigo);
+                container.appendChild(span);
+            }
+        }
+
+        function copiarParaAreaDeTransferencia(codigo) {
+            const codificado = `%26#${codigo}%3B`;
+            navigator.clipboard.writeText(codificado).then(() => {
+                popup.textContent = `Copiado: ${codificado}`;
+                popup.style.display = "block";
+                setTimeout(() => popup.style.display = "none", 2000);
+            });
+        }
+
+        Object.entries(categorias).forEach(([titulo, intervalo]) => adicionarCategoria(titulo, intervalo));
+    </script>
+</body>
+</html>
