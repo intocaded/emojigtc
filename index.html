@@ -19,14 +19,24 @@
             border-radius: 5px;
             display: none;
         }
+        #emojiInputContainer { margin-bottom: 20px; }
+        #emojiInput { font-size: 1.5rem; padding: 5px; }
+        #emojiCode { margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
     <h1>Emojis Bio GarticAPP</h1>
-    <p>Clique em um emoji para copiar</p>
+    <p>Clique em um emoji para copiar ou digite um abaixo</p>
+    
+    <div id="emojiInputContainer">
+        <input type="text" id="emojiInput" maxlength="2" placeholder="Digite um emoji">
+        <button onclick="exibirCodigo()">Obter Código</button>
+        <div id="emojiCode"></div>
+    </div>
+    
     <div id="emojiContainer"></div>
     <div id="popup" class="popup"></div>
-
+    
     <script>
         const categorias = {
             "😀 Carinhas e Emoções": [0x1F600, 0x1F64F],
@@ -41,6 +51,8 @@
 
         const container = document.getElementById("emojiContainer");
         const popup = document.getElementById("popup");
+        const emojiInput = document.getElementById("emojiInput");
+        const emojiCode = document.getElementById("emojiCode");
 
         function adicionarCategoria(titulo, intervalo) {
             const tituloCategoria = document.createElement("div");
@@ -65,6 +77,23 @@
                 setTimeout(() => popup.style.display = "none", 2000);
             });
         }
+
+        function exibirCodigo() {
+            const emoji = emojiInput.value.trim();
+            if (emoji) {
+                const codigo = emoji.codePointAt(0);
+                const codificado = `%26#${codigo}%3B`;
+                emojiCode.textContent = `Código: ${codificado}`;
+            } else {
+                emojiCode.textContent = "Digite um emoji válido!";
+            }
+        }
+
+        emojiInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                exibirCodigo();
+            }
+        });
 
         Object.entries(categorias).forEach(([titulo, intervalo]) => adicionarCategoria(titulo, intervalo));
     </script>
